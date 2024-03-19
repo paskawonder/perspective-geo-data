@@ -1,5 +1,6 @@
 package com.booking.perspective.geo.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +12,11 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-public class RectTreeNodeAdjacency {
+public class QuadTreeNodeInheritance {
     
-    private Long id1;
-    private Long id2;
+    @Column(name = "id_parent")
+    private Long idParent;
+    @Column(name = "id_child")
+    private Long idChild;
     
 }
