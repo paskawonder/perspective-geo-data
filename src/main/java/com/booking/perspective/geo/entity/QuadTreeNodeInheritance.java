@@ -20,7 +20,7 @@ public class QuadTreeNodeInheritance {
     @EmbeddedId
     private Id id;
     
-    public QuadTreeNodeInheritance(Long idParent, Long idChild) {
+    public QuadTreeNodeInheritance(String idParent, String idChild) {
         this.id = new Id(idParent, idChild);
     }
     
@@ -29,10 +29,10 @@ public class QuadTreeNodeInheritance {
     @EqualsAndHashCode
     @Embeddable
     private static class Id implements Serializable {
-        @Column(name = "id_parent")
-        private Long idParent;
-        @Column(name = "id_child")
-        private Long idChild;
+        @Column(name = "id_parent", columnDefinition="CHAR(36)")
+        private String idParent;
+        @Column(name = "id_child", columnDefinition="CHAR(36)")
+        private String idChild;
     }
     
 }

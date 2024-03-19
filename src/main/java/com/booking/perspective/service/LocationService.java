@@ -4,7 +4,6 @@ import com.booking.perspective.geo.QuadTreeHelper;
 import com.booking.perspective.geo.entity.QuadTreeNode;
 import com.booking.perspective.geo.repository.QuadTreeNodeRepository;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,20 +41,20 @@ public class LocationService {
     
     @Transactional
     public void defaultSplit() {
-        List<QuadTreeNode> nodes = List.of(quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow());
-        List<QuadTreeNode> impacted = new ArrayList<>();
+        QuadTreeNode root = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
+        List<QuadTreeNode> nodes = List.of(root);
         while (!nodes.isEmpty()) {
             for (QuadTreeNode node: nodes) {
                 if (node.getChilds().isEmpty()) {
-                    impacted.addAll(quadTreeHelper.split(node));
+                    quadTreeHelper.split(node);
                     for (QuadTreeNode child: node.getChilds()) {
-                        child.getLoad().setExpectedFactor(node.getLoad().getExpectedFactor() - 1);
+                        child.setLoadFactor(node.getLoadFactor() - 1);
                     }
                 }
             }
-            nodes = nodes.stream().flatMap(e -> e.getChilds().stream()).filter(e -> e.getLoad().getExpectedFactor() > 0).toList();
+            nodes = nodes.stream().flatMap(e -> e.getChilds().stream()).filter(e -> e.getLoadFactor() > 0).toList();
         }
-        quadTreeNodeRepository.saveAll(impacted);
+        quadTreeNodeRepository.save(root);
     }
     
 

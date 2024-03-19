@@ -21,7 +21,7 @@ public class QuadTreeNodeAdjacency {
     @EmbeddedId
     private Id id;
     
-    public QuadTreeNodeAdjacency(Long id1, Long id2) {
+    public QuadTreeNodeAdjacency(String id1, String id2) {
         id = new Id(id1, id2);
     }
     
@@ -30,10 +30,10 @@ public class QuadTreeNodeAdjacency {
     @EqualsAndHashCode
     @Embeddable
     private static class Id implements Serializable {
-        @Column(name = "id_1")
-        private Long id1;
-        @Column(name = "id_2")
-        private Long id2;
+        @Column(name = "id_1", columnDefinition="CHAR(36)")
+        private String id1;
+        @Column(name = "id_2", columnDefinition="CHAR(36)")
+        private String id2;
     }
     
 }

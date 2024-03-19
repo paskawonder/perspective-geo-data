@@ -1,16 +1,19 @@
 package com.booking.perspective.geo.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +22,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode(of = "id")
 @Entity
 public class QuadTreeNode {
     
     @Id
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "id", columnDefinition="CHAR(36)")
+    private String id;
     @Column(name = "left_top_lat")
     private BigDecimal leftTopLat;
     @Column(name = "left_top_lon")
@@ -33,22 +37,32 @@ public class QuadTreeNode {
     private BigDecimal rightBotLat;
     @Column(name = "right_bot_lon")
     private BigDecimal rightBotLon;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "quad_tree_node_inheritance",
             joinColumns = @JoinColumn(name = "id_parent"),
             inverseJoinColumns = @JoinColumn(name = "id_child")
     )
-    private Collection<QuadTreeNode> childs = new ArrayList<>();
-    @ManyToMany
+    private Set<QuadTreeNode> childs = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "quad_tree_node_adjacency",
             joinColumns = @JoinColumn(name = "id_1"),
             inverseJoinColumns = @JoinColumn(name = "id_2")
     )
-    private Collection<QuadTreeNode> adjs = new ArrayList<>();
-    @OneToOne
-    @JoinColumn(name = "id")
-    private QuadTreeNodeLoad load;
+    private Set<QuadTreeNode> adjs = new HashSet<>();
+    
+    private Integer loadFactor;
+    
+    public QuadTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLon, BigDecimal rightBotLat, BigDecimal rightBotLon, Collection<QuadTreeNode> childs, Collection<QuadTreeNode> adjs) {
+        this.id = UUID.randomUUID().toString();
+        this.leftTopLat = leftTopLat;
+        this.leftTopLon = leftTopLon;
+        this.rightBotLat = rightBotLat;
+        this.rightBotLon = rightBotLon;
+        this.childs = new HashSet<>(childs);
+        this.adjs = new HashSet<>(adjs);
+        this.loadFactor = 0;
+    }
     
 }
