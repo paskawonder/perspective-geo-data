@@ -2,6 +2,8 @@ package com.booking.perspective.geo;
 
 import com.booking.perspective.geo.entity.QuadTreeNode;
 import com.booking.perspective.geo.entity.QuadTreeNodeLoad;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,9 +17,9 @@ public class QuadTreeHelper {
         if (!leaf.getChilds().isEmpty()) {
             throw new IllegalStateException(leaf.getId() + " is not a leaf");
         }
-        double[] mid = {
-                (leaf.getLeftTopLat() - leaf.getRightBotLat()) / 2d,
-                (leaf.getRightBotLon() - leaf.getLeftTopLon()) / 2d
+        BigDecimal[] mid = {
+                leaf.getLeftTopLat().subtract(leaf.getRightBotLat()).divide(BigDecimal.TWO, RoundingMode.CEILING),
+                leaf.getRightBotLon().subtract(leaf.getLeftTopLon()).divide(BigDecimal.TWO, RoundingMode.CEILING)
         };
         long id = leaf.getId();
         List<QuadTreeNode> impacted = new ArrayList<>();
@@ -46,9 +48,9 @@ public class QuadTreeHelper {
     
     private Collection<QuadTreeNode> adjs(QuadTreeNode node, Collection<QuadTreeNode> candidates) {
         List<QuadTreeNode> adjs = new ArrayList<>();
-        double[][] p1 = { {node.getLeftTopLat(), node.getLeftTopLon()}, {node.getRightBotLat(), node.getRightBotLon()} };
+        BigDecimal[][] p1 = { {node.getLeftTopLat(), node.getLeftTopLon()}, {node.getRightBotLat(), node.getRightBotLon()} };
         for (QuadTreeNode adj: candidates) {
-            double[][] p2 = { {adj.getLeftTopLat(), adj.getLeftTopLon()}, {adj.getRightBotLat(), adj.getRightBotLon()} };
+            BigDecimal[][] p2 = { {adj.getLeftTopLat(), adj.getLeftTopLon()}, {adj.getRightBotLat(), adj.getRightBotLon()} };
             if (node.getId() - adj.getId() != 0 && adjs(p1, p2)) {
                 adjs.add(adj);
             }
@@ -56,16 +58,16 @@ public class QuadTreeHelper {
         return adjs;
     }
     
-    private boolean adjs(double[][] p1, double[][] p2) {
+    private boolean adjs(BigDecimal[][] p1, BigDecimal[][] p2) {
         return isBelow(p1, p2) || isBelow(p2, p1) || isRight(p1, p2) || isRight(p2, p1);
     }
     
-    private boolean isBelow(double[][] p1, double[][] p2) {
-        return p1[1][0] == p2[0][0] && p1[0][1] <= p2[1][1] && p1[1][1] >= p2[0][1];
+    private boolean isBelow(BigDecimal[][] p1, BigDecimal[][] p2) {
+        return p1[1][0].compareTo(p2[0][0]) == 0 && p1[0][1].compareTo(p2[1][1]) < 1 && p1[1][1].compareTo(p2[0][1]) > -1;
     }
     
-    private boolean isRight(double[][] p1, double[][] p2) {
-        return p1[1][1] == p2[0][1] && p1[0][0] >= p2[1][0] && p1[1][0] <= p2[0][0];
+    private boolean isRight(BigDecimal[][] p1, BigDecimal[][] p2) {
+        return p1[1][1].compareTo(p2[0][1]) == 0 && p1[0][0].compareTo(p2[1][0]) > -1 && p1[1][0].compareTo(p2[0][0]) < 1;
     }
     
 }
