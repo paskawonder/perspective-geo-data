@@ -18,8 +18,8 @@ public class QuadTreeHelper {
             throw new IllegalStateException(leaf.getId() + " is not a leaf");
         }
         BigDecimal[] mid = {
-                leaf.getLeftTopLat().subtract(leaf.getRightBotLat()).divide(BigDecimal.TWO, RoundingMode.CEILING),
-                leaf.getRightBotLon().subtract(leaf.getLeftTopLon()).divide(BigDecimal.TWO, RoundingMode.CEILING)
+                leaf.getLeftTopLat().add(leaf.getRightBotLat()).divide(BigDecimal.TWO, RoundingMode.CEILING),
+                leaf.getRightBotLon().add(leaf.getLeftTopLon()).divide(BigDecimal.TWO, RoundingMode.CEILING)
         };
         Set<QuadTreeNode> childs = Set.of(
                 new QuadTreeNode(leaf.getLeftTopLat(), leaf.getLeftTopLon(), mid[0], mid[1], new ArrayList<>(), new ArrayList<>()),
