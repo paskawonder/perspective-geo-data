@@ -22,9 +22,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(exclude = {"id", "childs", "adjs"})
 @Entity
-public class QuadTreeNode {
+public class GeoTreeNode {
     
     @Id
     @Column(name = "id", columnDefinition="CHAR(36)")
@@ -39,20 +39,20 @@ public class QuadTreeNode {
     private BigDecimal rightBotLon;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "quad_tree_node_inheritance",
+            name = "geo_tree_node_inheritance",
             joinColumns = @JoinColumn(name = "id_parent"),
             inverseJoinColumns = @JoinColumn(name = "id_child")
     )
-    private Set<QuadTreeNode> childs = new HashSet<>();
+    private Set<GeoTreeNode> childs = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "quad_tree_node_adjacency",
+            name = "geo_tree_node_adjacency",
             joinColumns = @JoinColumn(name = "id_1"),
             inverseJoinColumns = @JoinColumn(name = "id_2")
     )
-    private Set<QuadTreeNode> adjs = new HashSet<>();
+    private Set<GeoTreeNode> adjs = new HashSet<>();
     
-    public QuadTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLon, BigDecimal rightBotLat, BigDecimal rightBotLon) {
+    public GeoTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLon, BigDecimal rightBotLat, BigDecimal rightBotLon) {
         this.id = UUID.randomUUID().toString();
         this.leftTopLat = leftTopLat;
         this.leftTopLon = leftTopLon;

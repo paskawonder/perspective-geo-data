@@ -27,7 +27,6 @@ function onMouseMove(e) {
     xhr.open("POST", "http://localhost:8080/geo/adjs", false);
     xhr.setRequestHeader('Content-type', 'application/json');
     xhr.send(JSON.stringify({'lat': e.latlng.lat, 'lon': e.latlng.lng}));
-    console.log(JSON.parse(xhr.responseText));
     var polygon = L.polygon(JSON.parse(xhr.responseText), {
         weight: 0,
         fillOpacity: .25,

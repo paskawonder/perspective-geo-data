@@ -1,5 +1,5 @@
 geo:
-  quad-tree:
+  geo-tree:
     root:
       id: 1
 

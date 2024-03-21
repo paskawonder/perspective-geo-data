@@ -1,7 +1,7 @@
 package com.booking.perspective.geo.rest;
 
 import com.booking.perspective.geo.GeoService;
-import com.booking.perspective.geo.entity.QuadTreeNode;
+import com.booking.perspective.geo.entity.GeoTreeNode;
 import com.booking.perspective.geo.rest.model.CoordinatesRequest;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class GeoController {
         return geoService.adjs(request.getLat(), request.getLon()).stream().map(this::mapRectToLines).toList();
     }
     
-    private List<List<String>> mapRectToLines(QuadTreeNode e) {
+    private List<List<String>> mapRectToLines(GeoTreeNode e) {
         return List.of(
                 List.of(e.getLeftTopLat().toString(), e.getLeftTopLon().toString()),
                 List.of(e.getLeftTopLat().toString(), e.getRightBotLon().toString()),

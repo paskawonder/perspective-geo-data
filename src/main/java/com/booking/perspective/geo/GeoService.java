@@ -1,7 +1,7 @@
 package com.booking.perspective.geo;
 
-import com.booking.perspective.geo.entity.QuadTreeNode;
-import com.booking.perspective.geo.repository.QuadTreeNodeRepository;
+import com.booking.perspective.geo.entity.GeoTreeNode;
+import com.booking.perspective.geo.repository.GeoTreeNodeRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,25 +13,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class GeoService {
     
-    private final long quadTreeRootId;
-    private final QuadTreeNodeRepository quadTreeNodeRepository;
-    private final QuadTreeHelper quadTreeHelper;
+    private final long geoTreeRootId;
+    private final GeoTreeNodeRepository geoTreeNodeRepository;
+    private final GeoTreeHelper geoTreeHelper;
     
     @Autowired
-    public GeoService(@Value("${geo.quad-tree.root.id}") Long quadTreeRootId, QuadTreeNodeRepository quadTreeNodeRepository, QuadTreeHelper quadTreeHelper) {
-        this.quadTreeRootId = quadTreeRootId;
-        this.quadTreeNodeRepository = quadTreeNodeRepository;
-        this.quadTreeHelper = quadTreeHelper;
+    public GeoService(@Value("${geo.geo-tree.root.id}") Long geoTreeRootId, GeoTreeNodeRepository geoTreeNodeRepository, GeoTreeHelper geoTreeHelper) {
+        this.geoTreeRootId = geoTreeRootId;
+        this.geoTreeNodeRepository = geoTreeNodeRepository;
+        this.geoTreeHelper = geoTreeHelper;
     }
     
     @Transactional
-    public List<QuadTreeNode> getLeaves() {
-        QuadTreeNode root = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
-        List<QuadTreeNode> nodes = List.of(root);
-        List<QuadTreeNode> leaves = new ArrayList<>();
+    public List<GeoTreeNode> getLeaves() {
+        GeoTreeNode root = geoTreeNodeRepository.findById(geoTreeRootId).orElseThrow();
+        List<GeoTreeNode> nodes = List.of(root);
+        List<GeoTreeNode> leaves = new ArrayList<>();
         while (!nodes.isEmpty()) {
-            List<QuadTreeNode> childs = new ArrayList<>();
-            for (QuadTreeNode node: nodes) {
+            List<GeoTreeNode> childs = new ArrayList<>();
+            for (GeoTreeNode node: nodes) {
                 if (node.getChilds().isEmpty()) {
                     leaves.add(node);
                 } else {
@@ -44,8 +44,8 @@ public class GeoService {
     }
     
     @Transactional
-    public QuadTreeNode resolve(BigDecimal lat, BigDecimal lon) {
-        QuadTreeNode node = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
+    public GeoTreeNode resolve(BigDecimal lat, BigDecimal lon) {
+        GeoTreeNode node = geoTreeNodeRepository.findById(geoTreeRootId).orElseThrow();
         while (!node.getChilds().isEmpty()) {
             node = node.getChilds().stream()
                     .filter(e -> e.getLeftTopLat().compareTo(lat) > -1 && e.getLeftTopLon().compareTo(lon) < 1 && e.getRightBotLat().compareTo(lat) < 1 && e.getRightBotLon().compareTo(lon) > -1)
@@ -55,15 +55,15 @@ public class GeoService {
     }
     
     @Transactional
-    public List<QuadTreeNode> adjs(BigDecimal lat, BigDecimal lon) {
+    public List<GeoTreeNode> adjs(BigDecimal lat, BigDecimal lon) {
         return new ArrayList<>(resolve(lat, lon).getAdjs());
     }
     
     @Transactional
     public void split(BigDecimal lat, BigDecimal lon) {
-        QuadTreeNode node = resolve(lat, lon);
-        quadTreeHelper.split(node);
-        quadTreeNodeRepository.save(node);
+        GeoTreeNode node = resolve(lat, lon);
+        geoTreeHelper.split(node);
+        geoTreeNodeRepository.save(node);
     }
 
 }
