@@ -7,7 +7,6 @@ function onClick(e) {
     xhr.overrideMimeType('application/json');
     xhr.open("GET", "http://localhost:8080/geo", false);
     xhr.send(null);
-    console.log(JSON.parse(xhr.responseText));
     L.polygon(JSON.parse(xhr.responseText), {
         fillOpacity: 0,
         weight: 1,
