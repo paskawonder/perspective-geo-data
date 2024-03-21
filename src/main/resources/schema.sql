@@ -4,7 +4,6 @@ CREATE TABLE quad_tree_node (
     left_top_lon DECIMAL(9,6) NOT NULL,
     right_bot_lat DECIMAL(8,6) NOT NULL,
     right_bot_lon DECIMAL(9,6) NOT NULL,
-    load_factor INTEGER NOT NULL,
     PRIMARY KEY (id)
 );
 

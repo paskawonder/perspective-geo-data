@@ -22,12 +22,15 @@ public class QuadTreeHelper {
                 leaf.getRightBotLon().add(leaf.getLeftTopLon()).divide(BigDecimal.TWO, RoundingMode.CEILING)
         };
         Set<QuadTreeNode> childs = Set.of(
-                new QuadTreeNode(leaf.getLeftTopLat(), leaf.getLeftTopLon(), mid[0], mid[1], leaf),
-                new QuadTreeNode(leaf.getLeftTopLat(), mid[1], mid[0], leaf.getRightBotLon(), leaf),
-                new QuadTreeNode(mid[0], leaf.getLeftTopLon(), leaf.getRightBotLat(), mid[1], leaf),
-                new QuadTreeNode(mid[0], mid[1], leaf.getRightBotLat(), leaf.getRightBotLon(), leaf)
+                new QuadTreeNode(leaf.getLeftTopLat(), leaf.getLeftTopLon(), mid[0], mid[1]),
+                new QuadTreeNode(leaf.getLeftTopLat(), mid[1], mid[0], leaf.getRightBotLon()),
+                new QuadTreeNode(mid[0], leaf.getLeftTopLon(), leaf.getRightBotLat(), mid[1]),
+                new QuadTreeNode(mid[0], mid[1], leaf.getRightBotLat(), leaf.getRightBotLon())
         );
         leaf.setChilds(new HashSet<>(childs));
+        for (QuadTreeNode adj: leaf.getAdjs()) {
+            adj.getAdjs().remove(leaf);
+        }
         for (QuadTreeNode child: childs) {
             for (QuadTreeNode adj: adjs(child, leaf.getAdjs())) {
                 child.getAdjs().add(adj);

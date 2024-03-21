@@ -30,7 +30,7 @@ public class GeoController {
     
     @GetMapping
     public List<List<List<String>>> get() {
-        return geoService.get().stream().map(this::mapRectToLines).toList();
+        return geoService.getLeaves().stream().map(this::mapRectToLines).toList();
     }
     
     @PostMapping("/neighbours")

@@ -3,6 +3,7 @@ package com.booking.perspective.geo;
 import com.booking.perspective.geo.entity.QuadTreeNode;
 import com.booking.perspective.geo.repository.QuadTreeNodeRepository;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +24,30 @@ public class GeoService {
         this.quadTreeHelper = quadTreeHelper;
     }
     
-    public List<QuadTreeNode> get() {
-        return quadTreeNodeRepository.findAll();
+    @Transactional
+    public List<QuadTreeNode> getLeaves() {
+        QuadTreeNode root = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
+        List<QuadTreeNode> nodes = List.of(root);
+        List<QuadTreeNode> leaves = new ArrayList<>();
+        while (!nodes.isEmpty()) {
+            List<QuadTreeNode> childs = new ArrayList<>();
+            for (QuadTreeNode node: nodes) {
+                if (node.getChilds().isEmpty()) {
+                    leaves.add(node);
+                } else {
+                    childs.addAll(node.getChilds());
+                }
+            }
+            nodes = childs;
+        }
+        return leaves;
     }
     
     public QuadTreeNode resolve(BigDecimal lat, BigDecimal lon) {
         QuadTreeNode node = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
         while (!node.getChilds().isEmpty()) {
             node = node.getChilds().stream()
-                    .filter(e -> e.getLeftTopLat().compareTo(lat) > -1 && e.getLeftTopLon().compareTo(lon) > -1 && e.getRightBotLat().compareTo(lat) < 1 && e.getRightBotLat().compareTo(lon) < 1)
+                    .filter(e -> e.getLeftTopLat().compareTo(lat) > -1 && e.getLeftTopLon().compareTo(lon) < 1 && e.getRightBotLat().compareTo(lat) < 1 && e.getRightBotLon().compareTo(lon) > -1)
                     .findAny().orElseThrow();
         }
         return node;
