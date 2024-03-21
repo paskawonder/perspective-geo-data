@@ -3,7 +3,6 @@ package com.booking.perspective.geo;
 import com.booking.perspective.geo.entity.QuadTreeNode;
 import com.booking.perspective.geo.repository.QuadTreeNodeRepository;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,25 +38,10 @@ public class GeoService {
     }
     
     @Transactional
-    public void defaultSplit() {
-        QuadTreeNode root = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
-        List<QuadTreeNode> nodes = List.of(root);
-        while (!nodes.isEmpty()) {
-            List<QuadTreeNode> next = new ArrayList<>();
-            for (QuadTreeNode node: nodes) {
-                if (node.getChilds().isEmpty()) {
-                    quadTreeHelper.split(node);
-                    for (QuadTreeNode child: node.getChilds()) {
-                        child.setLoadFactor(node.getLoadFactor() - 1);
-                    }
-                } else if (node.getLoadFactor() > 0) {
-                    next.addAll(node.getChilds());
-                }
-            }
-            nodes = next;
-        }
-        quadTreeNodeRepository.save(root);
+    public void split(BigDecimal lat, BigDecimal lon) {
+        QuadTreeNode node = resolve(lat, lon);
+        quadTreeHelper.split(node);
+        quadTreeNodeRepository.save(node);
     }
-    
 
 }

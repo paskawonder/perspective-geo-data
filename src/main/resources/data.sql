@@ -1,9 +1,9 @@
-INSERT INTO quad_tree_node (id, left_top_lat, left_top_lon, right_bot_lat, right_bot_lon, load_factor)
+INSERT INTO quad_tree_node (id, left_top_lat, left_top_lon, right_bot_lat, right_bot_lon)
 VALUES
-('1', 90, -180, -60, 180, 4),
-('2', 90, -180, -60, -30, 3),
-('3', 90, -30, 30, 180, 2),
-('4', 30, -30, -60, 180, 0);
+('1', 90, -180, -60, 180),
+('2', 90, -180, -60, -30),
+('3', 90, -30, 30, 180),
+('4', 30, -30, -60, 180);
 
 INSERT INTO quad_tree_node_inheritance (id_parent, id_child)
 VALUES

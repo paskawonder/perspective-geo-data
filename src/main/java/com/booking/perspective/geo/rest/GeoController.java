@@ -1,10 +1,14 @@
-package com.booking.perspective.geo;
+package com.booking.perspective.geo.rest;
 
+import com.booking.perspective.geo.GeoService;
+import com.booking.perspective.geo.rest.model.CoordinatesRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +36,8 @@ public class GeoController {
     }
     
     @PostMapping
-    public void split() {
-        geoService.defaultSplit();
+    public void split(@RequestBody CoordinatesRequest request) {
+        geoService.split(new BigDecimal(request.getLat()), new BigDecimal(request.getLon()));
     }
     
 }

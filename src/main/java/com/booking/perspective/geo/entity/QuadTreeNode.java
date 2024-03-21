@@ -7,8 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -37,7 +38,14 @@ public class QuadTreeNode {
     private BigDecimal rightBotLat;
     @Column(name = "right_bot_lon")
     private BigDecimal rightBotLon;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "quad_tree_node_inheritance",
+            joinColumns = @JoinColumn(name = "id_child"),
+            inverseJoinColumns = @JoinColumn(name = "id_parent")
+    )
+    private QuadTreeNode parent;
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "quad_tree_node_inheritance",
             joinColumns = @JoinColumn(name = "id_parent"),
@@ -52,17 +60,15 @@ public class QuadTreeNode {
     )
     private Set<QuadTreeNode> adjs = new HashSet<>();
     
-    private Integer loadFactor;
-    
-    public QuadTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLon, BigDecimal rightBotLat, BigDecimal rightBotLon, Collection<QuadTreeNode> childs, Collection<QuadTreeNode> adjs) {
+    public QuadTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLon, BigDecimal rightBotLat, BigDecimal rightBotLon, QuadTreeNode parent) {
         this.id = UUID.randomUUID().toString();
         this.leftTopLat = leftTopLat;
         this.leftTopLon = leftTopLon;
         this.rightBotLat = rightBotLat;
         this.rightBotLon = rightBotLon;
-        this.childs = new HashSet<>(childs);
-        this.adjs = new HashSet<>(adjs);
-        this.loadFactor = 0;
+        this.parent = parent;
+        this.childs = new HashSet<>();
+        this.adjs = new HashSet<>();
     }
     
 }
