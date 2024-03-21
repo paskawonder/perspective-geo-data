@@ -3,7 +3,6 @@ package com.booking.perspective.geo.rest;
 import com.booking.perspective.geo.GeoService;
 import com.booking.perspective.geo.entity.QuadTreeNode;
 import com.booking.perspective.geo.rest.model.CoordinatesRequest;
-import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,7 @@ public class GeoController {
     
     @PostMapping
     public void split(@RequestBody CoordinatesRequest request) {
-        geoService.split(new BigDecimal(request.getLat()), new BigDecimal(request.getLon()));
+        geoService.split(request.getLat(), request.getLon());
     }
     
     @GetMapping
@@ -33,9 +32,9 @@ public class GeoController {
         return geoService.getLeaves().stream().map(this::mapRectToLines).toList();
     }
     
-    @PostMapping("/neighbours")
+    @PostMapping("/adjs")
     public List<List<List<String>>> get(@RequestBody CoordinatesRequest request) {
-        return geoService.resolve(new BigDecimal(request.getLat()), new BigDecimal(request.getLon())).getChilds().stream().map(this::mapRectToLines).toList();
+        return geoService.adjs(request.getLat(), request.getLon()).stream().map(this::mapRectToLines).toList();
     }
     
     private List<List<String>> mapRectToLines(QuadTreeNode e) {

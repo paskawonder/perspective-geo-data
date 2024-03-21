@@ -43,6 +43,7 @@ public class GeoService {
         return leaves;
     }
     
+    @Transactional
     public QuadTreeNode resolve(BigDecimal lat, BigDecimal lon) {
         QuadTreeNode node = quadTreeNodeRepository.findById(quadTreeRootId).orElseThrow();
         while (!node.getChilds().isEmpty()) {
@@ -51,6 +52,11 @@ public class GeoService {
                     .findAny().orElseThrow();
         }
         return node;
+    }
+    
+    @Transactional
+    public List<QuadTreeNode> adjs(BigDecimal lat, BigDecimal lon) {
+        return new ArrayList<>(resolve(lat, lon).getAdjs());
     }
     
     @Transactional

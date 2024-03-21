@@ -10,4 +10,5 @@ L.polygon(JSON.parse(xhr.responseText), {
     opacity: 1,
     color: 'red'
 }).addTo(map);
-map.on('click', onMapClick);
+map.on('click', onClick);
+map.on('mousemove', onMouseMove);
