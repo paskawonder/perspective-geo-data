@@ -1,9 +1,9 @@
 package com.booking.perspective.geo.rest;
 
 import com.booking.perspective.geo.GeoService;
+import com.booking.perspective.geo.entity.QuadTreeNode;
 import com.booking.perspective.geo.rest.model.CoordinatesRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,21 +23,28 @@ public class GeoController {
         this.geoService = geoService;
     }
     
-    @GetMapping
-    public List<List<List<String>>> get() {
-        return geoService.get().stream().map(e -> {
-            List<List<String>> list = new ArrayList<>();
-            list.add(List.of(e.getLeftTopLat().toString(), e.getLeftTopLon().toString()));
-            list.add(List.of(e.getLeftTopLat().toString(), e.getRightBotLon().toString()));
-            list.add(List.of(e.getRightBotLat().toString(), e.getRightBotLon().toString()));
-            list.add(List.of(e.getRightBotLat().toString(), e.getLeftTopLon().toString()));
-            return list;
-        }).toList();
-    }
-    
     @PostMapping
     public void split(@RequestBody CoordinatesRequest request) {
         geoService.split(new BigDecimal(request.getLat()), new BigDecimal(request.getLon()));
+    }
+    
+    @GetMapping
+    public List<List<List<String>>> get() {
+        return geoService.get().stream().map(this::mapRectToLines).toList();
+    }
+    
+    @PostMapping("/neighbours")
+    public List<List<List<String>>> get(@RequestBody CoordinatesRequest request) {
+        return geoService.resolve(new BigDecimal(request.getLat()), new BigDecimal(request.getLon())).getChilds().stream().map(this::mapRectToLines).toList();
+    }
+    
+    private List<List<String>> mapRectToLines(QuadTreeNode e) {
+        return List.of(
+                List.of(e.getLeftTopLat().toString(), e.getLeftTopLon().toString()),
+                List.of(e.getLeftTopLat().toString(), e.getRightBotLon().toString()),
+                List.of(e.getRightBotLat().toString(), e.getRightBotLon().toString()),
+                List.of(e.getRightBotLat().toString(), e.getLeftTopLon().toString())
+        );
     }
     
 }
