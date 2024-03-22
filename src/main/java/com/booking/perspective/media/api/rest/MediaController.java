@@ -5,7 +5,9 @@ import com.booking.perspective.media.service.MediaMeta;
 import com.booking.perspective.media.service.MediaService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,10 +30,15 @@ public class MediaController {
     }
     
     @PostMapping
-    public void uploadFile(@RequestParam("meta") String metaStr, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
+    public void create(@RequestParam("meta") String metaStr, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
         MediaMeta meta = objectMapper.readValue(metaStr, MediaMeta.class);
         String fileId = fileService.save(file);
         mediaService.create(meta, fileId);
+    }
+    
+    @GetMapping
+    public List<String> get() {
+        return mediaService.get(null);
     }
     
 }

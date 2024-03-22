@@ -14,6 +14,7 @@ public class GeoConfig {
             @Override
             public void addViewControllers(ViewControllerRegistry registry) {
                 registry.addViewController("/geo").setViewName("forward:/geo/geo.html");
+                registry.addViewController("/list").setViewName("forward:/media/list.html");
             }
         };
     }
