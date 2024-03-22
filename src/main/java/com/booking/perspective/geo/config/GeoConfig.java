@@ -13,8 +13,7 @@ public class GeoConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/geo").setViewName(
-                        "forward:/geo.html");
+                registry.addViewController("/geo").setViewName("forward:/geo/geo.html");
             }
         };
     }
