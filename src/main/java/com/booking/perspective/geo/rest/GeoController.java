@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/geo")
+@RequestMapping("/admin/geo")
 public class GeoController {
     
     private final GeoService geoService;
