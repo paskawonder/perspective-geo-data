@@ -1,3 +1,6 @@
+media:
+  path: '/Users/ppolubentcev/Projects'
+
 geo:
   geo-tree:
     root:
