@@ -1,4 +1,4 @@
-package com.booking.perspective.geo.rest.model;
+package com.booking.perspective.geo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,14 +6,14 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class CoordinatesRequest {
+public class Coordinates {
     
     private final BigDecimal lat;
     
     private final BigDecimal lon;
     
     @JsonCreator
-    public CoordinatesRequest(@JsonProperty("lat") String lat, @JsonProperty("lon") String lon) {
+    public Coordinates(@JsonProperty("lat") String lat, @JsonProperty("lon") String lon) {
         BigDecimal temp = new BigDecimal(lat);
         while (temp.compareTo(BigDecimal.valueOf(90)) > 0) {
             temp = temp.subtract(BigDecimal.valueOf(180));

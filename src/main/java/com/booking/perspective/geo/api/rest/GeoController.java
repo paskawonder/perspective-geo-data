@@ -1,8 +1,8 @@
-package com.booking.perspective.geo.rest;
+package com.booking.perspective.geo.api.rest;
 
 import com.booking.perspective.geo.GeoService;
 import com.booking.perspective.geo.entity.GeoTreeNode;
-import com.booking.perspective.geo.rest.model.CoordinatesRequest;
+import com.booking.perspective.geo.Coordinates;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +23,8 @@ public class GeoController {
     }
     
     @PostMapping
-    public void split(@RequestBody CoordinatesRequest request) {
-        geoService.split(request.getLat(), request.getLon());
+    public void split(@RequestBody Coordinates request) {
+        geoService.split(request);
     }
     
     @GetMapping
@@ -33,8 +33,8 @@ public class GeoController {
     }
     
     @PostMapping("/adjs")
-    public List<List<List<String>>> get(@RequestBody CoordinatesRequest request) {
-        return geoService.adjs(request.getLat(), request.getLon()).stream().map(this::mapRectToLines).toList();
+    public List<List<List<String>>> get(@RequestBody Coordinates request) {
+        return geoService.adjs(request).stream().map(this::mapRectToLines).toList();
     }
     
     private List<List<String>> mapRectToLines(GeoTreeNode e) {
