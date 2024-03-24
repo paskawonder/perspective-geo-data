@@ -33,12 +33,16 @@ function view(e) {
     xhr.open('GET', 'http://localhost:8080/media', false);
     xhr.send(null);
     var imgs = JSON.parse(xhr.responseText);
+    var pics = document.getElementById('pics');
     for (let i = 0; i < imgs.length; i++) {
         const img = document.createElement('img');
         img.src = "data:image/jpeg;base64," + imgs[i];
-        document.querySelector(`body`).append(img);
+        pics.append(img);
     }
+    pics.style.left = e.parentNode.style.left;
+    pics.style.top = e.parentNode.style.top;
     clear(e);
+    pics.style.zIndex = 400;
 }
 
 function clear(e) {
