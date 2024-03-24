@@ -3,9 +3,11 @@ package com.booking.perspective.media.api.rest;
 import com.booking.perspective.media.service.FileService;
 import com.booking.perspective.media.service.MediaMeta;
 import com.booking.perspective.media.service.MediaService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +32,13 @@ public class MediaController {
     }
     
     @PostMapping
-    public void create(@RequestParam("meta") String metaStr, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
+    public void create(@RequestParam("meta") String metaStr, @RequestParam("file") MultipartFile file) throws IOException {
         MediaMeta meta = objectMapper.readValue(metaStr, MediaMeta.class);
-        String fileId = fileService.save(file);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Thumbnails.of(file.getInputStream())
+                .height(200).width(200)
+                .outputQuality(0.5).toOutputStream(output);
+        String fileId = fileService.save(output);
         mediaService.create(meta, fileId);
     }
     

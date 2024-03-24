@@ -1,6 +1,7 @@
 package com.booking.perspective.media.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -13,7 +14,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
@@ -25,11 +25,11 @@ public class FileService {
         this.mediaPath = mediaPath;
     }
     
-    public String save(MultipartFile file) {
+    public String save(ByteArrayOutputStream outputStream) {
         String fileId = UUID.randomUUID().toString();
         Path path = Path.of(mediaPath, fileId);
         try {
-            byte[] base64 = Base64.encodeBase64(file.getBytes());
+            byte[] base64 = Base64.encodeBase64(outputStream.toByteArray());
             Files.copy(new ByteArrayInputStream(base64), path);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

@@ -1,15 +1,28 @@
 var map = L.map('map').setView([52.3676, 4.9041], 1);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
 
-map.on('click', display);
+map.on('click', click);
 
-function display(e) {
+function click(e) {
+    console.log(e.target);
+    var isActive = false;
+    if (document.getElementById('pics').firstChild) {
+        isActive = true;
+    }
+    if (document.getElementById('pics') != e.target) {
+        removeAllChildNodes(document.getElementById('pics'));
+    }
     var action_buttons = document.getElementById('action_buttons');
-    action_buttons.style.display='block';
-    action_buttons.style.zIndex=400;
-    action_buttons.style.left = e.originalEvent.clientX;
-    action_buttons.style.top = e.originalEvent.clientY;
-    action_buttons.latlng = e.latlng;
+    if (!isActive && action_buttons.style.display === 'none') {
+        action_buttons.isActive = true;
+        action_buttons.style.display='block';
+        action_buttons.style.zIndex=400;
+        action_buttons.style.left = e.originalEvent.clientX;
+        action_buttons.style.top = e.originalEvent.clientY;
+        action_buttons.latlng = e.latlng;
+    } else {
+        action_buttons.style.display = 'none';
+    }
 }
 
 function upload(e) {
@@ -35,9 +48,11 @@ function view(e) {
     var imgs = JSON.parse(xhr.responseText);
     var pics = document.getElementById('pics');
     for (let i = 0; i < imgs.length; i++) {
+        const div = document.createElement('div');
+        pics.append(div);
         const img = document.createElement('img');
         img.src = "data:image/jpeg;base64," + imgs[i];
-        pics.append(img);
+        div.append(img);
     }
     pics.style.left = e.parentNode.style.left;
     pics.style.top = e.parentNode.style.top;
@@ -47,4 +62,10 @@ function view(e) {
 
 function clear(e) {
     e.parentNode.style.display = 'none';
+}
+
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
 }

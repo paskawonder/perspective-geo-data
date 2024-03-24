@@ -7,6 +7,9 @@ geo:
       id: 1
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
   jpa:
     open-in-view: false
     hibernate:
