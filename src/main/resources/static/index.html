@@ -11,7 +11,12 @@
     </style>
     <input type='file' id='file' style='display:none;'/>
     <body>
-        <div id='map'>
+        <div id='map'></div>
         <script src='media/media.js'></script>
+        <div id='action_buttons' style='display: none; position: absolute;'>
+            <button id='button_view' onclick='view(this)'>View around</button>
+            <button id='button_upload' onclick='upload(this)'>Upload</button>
+        </div>
+        <div id='pics'></div>
     </body>
 </html>
