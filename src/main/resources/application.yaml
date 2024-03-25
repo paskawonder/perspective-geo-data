@@ -1,5 +1,8 @@
 media:
-  path: '/Users/ppolubentcev/Projects/media'
+  storage:
+    path: '/Users/ppolubentcev/Projects/media'
+  search:
+    radius: 50
 
 geo:
   geo-tree:

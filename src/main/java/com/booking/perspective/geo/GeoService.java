@@ -43,7 +43,7 @@ public class GeoService {
     }
     
     @Transactional
-    public GeoTreeNode resolve(Coordinates coordinates) {
+    public GeoTreeNode navigateToLeaf(Coordinates coordinates) {
         GeoTreeNode node = geoTreeNodeRepository.findById(geoTreeRootId).orElseThrow();
         while (!node.getChilds().isEmpty()) {
             node = node.getChilds().stream()
@@ -55,12 +55,12 @@ public class GeoService {
     
     @Transactional
     public List<GeoTreeNode> adjs(Coordinates coordinates) {
-        return new ArrayList<>(resolve(coordinates).getAdjs());
+        return new ArrayList<>(navigateToLeaf(coordinates).getAdjs());
     }
     
     @Transactional
     public void split(Coordinates coordinates) {
-        GeoTreeNode node = resolve(coordinates);
+        GeoTreeNode node = navigateToLeaf(coordinates);
         geoTreeHelper.split(node);
         geoTreeNodeRepository.save(node);
     }

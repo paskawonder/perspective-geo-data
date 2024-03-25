@@ -2,6 +2,7 @@ package com.booking.perspective.media.service;
 
 import com.booking.perspective.geo.Coordinates;
 import com.booking.perspective.geo.GeoService;
+import com.booking.perspective.geo.entity.GeoTreeNode;
 import com.booking.perspective.media.MediaInfo;
 import com.booking.perspective.media.MediaInfoRepository;
 import java.util.List;
@@ -23,13 +24,15 @@ public class MediaService {
     }
 
     public void create(MediaMeta meta, String id) {
-        String geoLeafId = geoService.resolve(meta.getCoordinates()).getId();
+        String geoLeafId = geoService.navigateToLeaf(meta.getCoordinates()).getId();
         MediaInfo mediaInfo = new MediaInfo(id, meta.getCoordinates().getLat(), meta.getCoordinates().getLon(), geoLeafId);
         mediaInfoRepository.save(mediaInfo);
     }
     
     public List<String> get(Coordinates coordinates) {
-        return fileService.getAll();
+        GeoTreeNode leaf = geoService.navigateToLeaf(coordinates);
+        List<String> ids = expand(coordinates, leaf);
+        return fileService.get(ids);
     }
 
 }
