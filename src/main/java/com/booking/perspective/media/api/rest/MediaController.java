@@ -1,5 +1,6 @@
 package com.booking.perspective.media.api.rest;
 
+import com.booking.perspective.geo.Coordinates;
 import com.booking.perspective.media.service.FileService;
 import com.booking.perspective.media.service.MediaMeta;
 import com.booking.perspective.media.service.MediaService;
@@ -46,7 +47,7 @@ public class MediaController {
     
     @GetMapping
     public List<String> get() {
-        return mediaService.get(null);
+        return mediaService.get(new Coordinates("0", "0"));
     }
     
 }
