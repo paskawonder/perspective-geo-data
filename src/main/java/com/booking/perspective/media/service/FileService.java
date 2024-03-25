@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,16 +24,14 @@ public class FileService {
         this.mediaPath = mediaPath;
     }
     
-    public String save(ByteArrayOutputStream outputStream) {
-        String fileId = UUID.randomUUID().toString();
-        Path path = Path.of(mediaPath, fileId);
+    public void save(ByteArrayOutputStream outputStream, String id) {
+        Path path = Path.of(mediaPath, id);
         try {
             byte[] base64 = Base64.encodeBase64(outputStream.toByteArray());
             Files.copy(new ByteArrayInputStream(base64), path);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        return fileId;
     }
     
     public List<String> getAll() {

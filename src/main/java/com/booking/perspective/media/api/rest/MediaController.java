@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,12 +35,13 @@ public class MediaController {
     @PostMapping
     public void create(@RequestParam("meta") String metaStr, @RequestParam("file") MultipartFile file) throws IOException {
         MediaMeta meta = objectMapper.readValue(metaStr, MediaMeta.class);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ByteArrayOutputStream thumbnail = new ByteArrayOutputStream();
         Thumbnails.of(file.getInputStream())
                 .height(200).width(200)
-                .outputQuality(0.5).toOutputStream(output);
-        String fileId = fileService.save(output);
-        mediaService.create(meta, fileId);
+                .outputQuality(0.5).toOutputStream(thumbnail);
+        String id = UUID.randomUUID().toString();
+        fileService.save(thumbnail, id);
+        mediaService.create(meta, id);
     }
     
     @GetMapping

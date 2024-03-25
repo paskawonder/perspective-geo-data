@@ -18,3 +18,11 @@ CREATE TABLE geo_tree_node_adjacency (
     id_2 CHAR(36) NOT NULL,
     PRIMARY KEY (id_1, id_2)
 );
+
+CREATE TABLE media_info (
+    id CHAR(36) NOT NULL,
+    lat DECIMAL(8,6) NOT NULL,
+    lon DECIMAL(9,6) NOT NULL,
+    geo_leaf_id CHAR(36) NOT NULL,
+    PRIMARY KEY (id)
+);
