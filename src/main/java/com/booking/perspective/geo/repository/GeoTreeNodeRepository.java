@@ -11,4 +11,6 @@ public interface GeoTreeNodeRepository extends CrudRepository<GeoTreeNode, Long>
     @Override
     List<GeoTreeNode> findAll();
     
+    List<GeoTreeNode> findByChildsIsEmpty();
+    
 }

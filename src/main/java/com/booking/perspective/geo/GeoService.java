@@ -25,21 +25,7 @@ public class GeoService {
     
     @Transactional
     public List<GeoTreeNode> getLeaves() {
-        GeoTreeNode root = geoTreeNodeRepository.findById(geoTreeRootId).orElseThrow();
-        List<GeoTreeNode> nodes = List.of(root);
-        List<GeoTreeNode> leaves = new ArrayList<>();
-        while (!nodes.isEmpty()) {
-            List<GeoTreeNode> childs = new ArrayList<>();
-            for (GeoTreeNode node: nodes) {
-                if (node.getChilds().isEmpty()) {
-                    leaves.add(node);
-                } else {
-                    childs.addAll(node.getChilds());
-                }
-            }
-            nodes = childs;
-        }
-        return leaves;
+        return geoTreeNodeRepository.findByChildsIsEmpty();
     }
     
     @Transactional

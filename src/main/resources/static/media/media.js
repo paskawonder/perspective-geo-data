@@ -4,7 +4,6 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/
 map.on('click', click);
 
 function click(e) {
-    console.log(e.target);
     var isActive = false;
     if (document.getElementById('pics').firstChild) {
         isActive = true;
@@ -43,8 +42,10 @@ function upload(e) {
 function view(e) {
     const xhr = new XMLHttpRequest();
     xhr.overrideMimeType('application/json');
-    xhr.open('GET', 'http://localhost:8080/media', false);
-    xhr.send(null);
+    xhr.open('POST', 'http://localhost:8080/media/get', false);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    var latlng = e.parentNode.latlng;
+    xhr.send(JSON.stringify({'lat': latlng.lat, 'lon': latlng.lng}));
     var imgs = JSON.parse(xhr.responseText);
     var pics = document.getElementById('pics');
     for (let i = 0; i < imgs.length; i++) {
