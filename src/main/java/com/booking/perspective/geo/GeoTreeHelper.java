@@ -56,16 +56,11 @@ public class GeoTreeHelper {
     }
     
     private boolean adjs(BigDecimal[][] p1, BigDecimal[][] p2) {
-        return isBelow(p1, p2) || isBelow(p2, p1) || isRight(p1, p2) || isRight(p2, p1) || across(p1, p2) || across(p2, p1);
+        return isBelow(p1, p2) || isBelow(p2, p1) || isRight(p1, p2) || isRight(p2, p1);
     }
     
     private boolean isBelow(BigDecimal[][] p1, BigDecimal[][] p2) {
-        return touchLat(p1, p2) && p1[0][1].compareTo(p2[1][1]) < 1 && p1[1][1].compareTo(p2[0][1]) > -1;
-    }
-    
-    private boolean touchLat(BigDecimal[][] p1, BigDecimal[][] p2) {
-        return p1[1][0].compareTo(p2[0][0]) == 0
-                || (p1[0][0].compareTo(BigDecimal.valueOf(90)) == 0 && p2[1][0].compareTo(BigDecimal.valueOf(-90)) == 0);
+        return p1[1][0].compareTo(p2[0][0]) == 0 && p1[0][1].compareTo(p2[1][1]) < 1 && p1[1][1].compareTo(p2[0][1]) > -1;
     }
     
     private boolean isRight(BigDecimal[][] p1, BigDecimal[][] p2) {
@@ -73,14 +68,7 @@ public class GeoTreeHelper {
     }
     
     private boolean touchLon(BigDecimal[][] p1, BigDecimal[][] p2) {
-        return p1[1][1].compareTo(p2[0][1]) == 0
-                || (p1[0][1].compareTo(BigDecimal.valueOf(-180)) == 0 && p2[1][1].compareTo(BigDecimal.valueOf(180)) == 0);
-    }
-    
-    private boolean across(BigDecimal[][] p1, BigDecimal[][] p2) {
-        return p1[0][0].compareTo(BigDecimal.valueOf(90)) == 0 && p2[1][0].compareTo(BigDecimal.valueOf(-90)) == 0
-                && ((p1[0][1].compareTo(BigDecimal.valueOf(-180)) == 0 && p2[1][1].compareTo(BigDecimal.valueOf(180)) == 0)
-                || p1[1][1].compareTo(BigDecimal.valueOf(180)) == 0 && p2[0][1].compareTo(BigDecimal.valueOf(-180)) == 0);
+        return p1[1][1].compareTo(p2[0][1]) == 0 || (p1[0][1].compareTo(BigDecimal.valueOf(-180)) == 0 && p2[1][1].compareTo(BigDecimal.valueOf(180)) == 0);
     }
     
 }

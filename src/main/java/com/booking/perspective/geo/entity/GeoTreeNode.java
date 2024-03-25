@@ -38,11 +38,7 @@ public class GeoTreeNode {
     @Column(name = "right_bot_lon")
     private BigDecimal rightBotLon;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "geo_tree_node_inheritance",
-            joinColumns = @JoinColumn(name = "id_parent"),
-            inverseJoinColumns = @JoinColumn(name = "id_child")
-    )
+    @JoinColumn(name = "parent_id")
     private Set<GeoTreeNode> childs = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

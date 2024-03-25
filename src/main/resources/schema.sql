@@ -4,13 +4,8 @@ CREATE TABLE geo_tree_node (
     left_top_lon DECIMAL(9,6) NOT NULL,
     right_bot_lat DECIMAL(8,6) NOT NULL,
     right_bot_lon DECIMAL(9,6) NOT NULL,
+    parent_id CHAR(36),
     PRIMARY KEY (id)
-);
-
-CREATE TABLE geo_tree_node_inheritance (
-    id_parent CHAR(36) NOT NULL,
-    id_child CHAR(36) NOT NULL,
-    PRIMARY KEY (id_parent, id_child)
 );
 
 CREATE TABLE geo_tree_node_adjacency (
