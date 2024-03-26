@@ -7,7 +7,6 @@ import com.booking.perspective.geo.entity.GeoTreeNode;
 import com.booking.perspective.media.MediaInfo;
 import com.booking.perspective.media.MediaInfoRepository;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +33,7 @@ public class MediaService {
         this.mediaInfoRepository = mediaInfoRepository;
     }
 
+    @Transactional
     public void create(MediaMeta meta, String id) {
         String geoLeafId = geoService.navigateToLeaf(meta.getCoordinates()).getId();
         MediaInfo mediaInfo = new MediaInfo(id, meta.getCoordinates().getLat(), meta.getCoordinates().getLon(), geoLeafId);
@@ -49,29 +49,29 @@ public class MediaService {
     
     private List<String> expand(Coordinates coordinates, GeoTreeNode node) {
         BigDecimal lat = coordinates.getLat(), lng = coordinates.getLon();
-        List<String> ids = new ArrayList<>();
         List<GeoTreeNode> nodes = List.of(node);
         Set<String> visited = new HashSet<>();
         while (!nodes.isEmpty()) {
-            List<String> nIds = nodes.stream().map(GeoTreeNode::getId).toList();
-            visited.addAll(nIds);
-            ids.addAll(mediaInfoRepository.findByGeoLeafIdIn(nIds).stream().map(MediaInfo::getId).toList());
-            List<GeoTreeNode> adjs = nodes.stream().flatMap(e -> e.getAdjs().stream())
+            visited.addAll(nodes.stream().map(GeoTreeNode::getId).toList());
+            nodes = nodes.stream().flatMap(e -> e.getAdjs().stream())
                     .filter(e -> !visited.contains(e.getId()))
                     .filter(e -> {
-                        BigDecimal minDistLat = e.getLeftTopLat();
-                        if (lat.subtract(e.getLeftTopLat().abs()).compareTo(lat.subtract(e.getRightBotLat()).abs()) > 0) {
-                            minDistLat = e.getRightBotLat();
+                        BigDecimal y = lat;
+                        if (lat.compareTo(e.getLeftTopLat()) > 0) {
+                            y = e.getLeftTopLat();
+                        } else if (lat.compareTo(e.getRightBotLat()) < 0) {
+                            y = e.getRightBotLat();
                         }
-                        BigDecimal minDistLng = e.getLeftTopLon();
-                        if (lng.subtract(e.getLeftTopLon()).abs().compareTo(lng.subtract(e.getRightBotLon()).abs()) > 0) {
-                            minDistLng = e.getRightBotLon();
+                        BigDecimal x = lng;
+                        if (lng.compareTo(e.getLeftTopLon()) < 0) {
+                            x = e.getLeftTopLon();
+                        } else if (lng.compareTo(e.getRightBotLon()) > 0) {
+                            x = e.getRightBotLon();
                         }
-                        return Double.compare(geoUtils.dist(lat.doubleValue(), lng.doubleValue(), minDistLat.doubleValue(), minDistLng.doubleValue()), searchRadius) < 1;
+                        return Double.compare(geoUtils.dist(lat, lng, y, x), searchRadius) < 1;
                     }).toList();
-            nodes = adjs;
         }
-        return ids;
+        return mediaInfoRepository.findByGeoLeafIdIn(visited).stream().filter(e -> Double.compare(geoUtils.dist(lat, lng, e.getLat(), e.getLon()), searchRadius) < 1).map(MediaInfo::getId).toList();
     }
     
 }

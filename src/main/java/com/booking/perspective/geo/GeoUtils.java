@@ -1,11 +1,16 @@
 package com.booking.perspective.geo;
 
+import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GeoUtils {
     
     private static final int R = 6371;
+    
+    public double dist(BigDecimal lat1, BigDecimal lng1, BigDecimal lat2, BigDecimal lng2) {
+        return dist(lat1.doubleValue(), lng1.doubleValue(), lat2.doubleValue(), lng2.doubleValue());
+    }
     
     public double dist(double lat1, double lng1, double lat2, double lng2) {
         double dLat = Math.toRadians((lat2 - lat1));
