@@ -1,6 +1,7 @@
 package com.booking.perspective.media.api.rest;
 
 import com.booking.perspective.geo.Coordinates;
+import com.booking.perspective.media.model.MediaResponse;
 import com.booking.perspective.media.service.FileService;
 import com.booking.perspective.media.service.MediaMeta;
 import com.booking.perspective.media.service.MediaService;
@@ -46,7 +47,7 @@ public class MediaController {
     }
     
     @PostMapping("/get")
-    public List<String> get(@RequestBody Coordinates coordinates) {
+    public List<MediaResponse> get(@RequestBody Coordinates coordinates) {
         return mediaService.get(coordinates);
     }
     

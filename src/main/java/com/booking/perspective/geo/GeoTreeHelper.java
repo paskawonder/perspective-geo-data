@@ -19,13 +19,13 @@ public class GeoTreeHelper {
         }
         BigDecimal[] mid = {
                 leaf.getLeftTopLat().add(leaf.getRightBotLat()).divide(BigDecimal.TWO, RoundingMode.CEILING),
-                leaf.getRightBotLon().add(leaf.getLeftTopLon()).divide(BigDecimal.TWO, RoundingMode.CEILING)
+                leaf.getRightBotLng().add(leaf.getLeftTopLng()).divide(BigDecimal.TWO, RoundingMode.CEILING)
         };
         Set<GeoTreeNode> childs = Set.of(
-                new GeoTreeNode(leaf.getLeftTopLat(), leaf.getLeftTopLon(), mid[0], mid[1]),
-                new GeoTreeNode(leaf.getLeftTopLat(), mid[1], mid[0], leaf.getRightBotLon()),
-                new GeoTreeNode(mid[0], leaf.getLeftTopLon(), leaf.getRightBotLat(), mid[1]),
-                new GeoTreeNode(mid[0], mid[1], leaf.getRightBotLat(), leaf.getRightBotLon())
+                new GeoTreeNode(leaf.getLeftTopLat(), leaf.getLeftTopLng(), mid[0], mid[1]),
+                new GeoTreeNode(leaf.getLeftTopLat(), mid[1], mid[0], leaf.getRightBotLng()),
+                new GeoTreeNode(mid[0], leaf.getLeftTopLng(), leaf.getRightBotLat(), mid[1]),
+                new GeoTreeNode(mid[0], mid[1], leaf.getRightBotLat(), leaf.getRightBotLng())
         );
         leaf.setChilds(new HashSet<>(childs));
         for (GeoTreeNode adj: leaf.getAdjs()) {
@@ -45,9 +45,9 @@ public class GeoTreeHelper {
     
     private Collection<GeoTreeNode> adjs(GeoTreeNode node, Collection<GeoTreeNode> candidates) {
         List<GeoTreeNode> adjs = new ArrayList<>();
-        BigDecimal[][] p1 = { {node.getLeftTopLat(), node.getLeftTopLon()}, {node.getRightBotLat(), node.getRightBotLon()} };
+        BigDecimal[][] p1 = { {node.getLeftTopLat(), node.getLeftTopLng()}, {node.getRightBotLat(), node.getRightBotLng()} };
         for (GeoTreeNode adj: candidates) {
-            BigDecimal[][] p2 = { {adj.getLeftTopLat(), adj.getLeftTopLon()}, {adj.getRightBotLat(), adj.getRightBotLon()} };
+            BigDecimal[][] p2 = { {adj.getLeftTopLat(), adj.getLeftTopLng()}, {adj.getRightBotLat(), adj.getRightBotLng()} };
             if (!node.equals(adj) && adjs(p1, p2)) {
                 adjs.add(adj);
             }
@@ -64,10 +64,10 @@ public class GeoTreeHelper {
     }
     
     private boolean isRight(BigDecimal[][] p1, BigDecimal[][] p2) {
-        return touchLon(p1, p2) && p1[0][0].compareTo(p2[1][0]) > -1 && p1[1][0].compareTo(p2[0][0]) < 1;
+        return touchLng(p1, p2) && p1[0][0].compareTo(p2[1][0]) > -1 && p1[1][0].compareTo(p2[0][0]) < 1;
     }
     
-    private boolean touchLon(BigDecimal[][] p1, BigDecimal[][] p2) {
+    private boolean touchLng(BigDecimal[][] p1, BigDecimal[][] p2) {
         return p1[1][1].compareTo(p2[0][1]) == 0 || (p1[0][1].compareTo(BigDecimal.valueOf(-180)) == 0 && p2[1][1].compareTo(BigDecimal.valueOf(180)) == 0);
     }
     

@@ -7,7 +7,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,14 +34,14 @@ public class FileService {
         }
     }
     
-    public List<String> get(Collection<String> ids) {
-        return ids.stream().map(id -> Path.of(mediaStoragePath, id)).map(path -> {
+    public Map<String, String> get(Collection<String> ids) {
+        return ids.stream().collect(Collectors.toMap(id -> id, id -> {
             try {
-                return Files.readString(path);
+                return Files.readString(Path.of(mediaStoragePath, id));
             } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
             }
-        }).toList();
+        }));
     }
     
 }

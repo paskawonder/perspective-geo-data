@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GeoTreeNodeRepository extends CrudRepository<GeoTreeNode, Long> {
+public interface GeoTreeNodeRepository extends CrudRepository<GeoTreeNode, String> {
     
     @Override
     List<GeoTreeNode> findAll();

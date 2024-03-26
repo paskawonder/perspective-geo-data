@@ -2,7 +2,7 @@ media:
   storage:
     path: '/Users/ppolubentcev/Projects/media'
   search:
-    radius: 50
+    radius: 5000
 
 geo:
   geo-tree:

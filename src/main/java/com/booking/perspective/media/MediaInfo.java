@@ -20,18 +20,18 @@ public class MediaInfo {
     private String id;
     @Column(name = "lat")
     private BigDecimal lat;
-    @Column(name = "lon")
-    private BigDecimal lon;
+    @Column(name = "lng")
+    private BigDecimal lng;
     @Column(name = "geo_leaf_id", columnDefinition="CHAR(36)")
     private String geoLeafId;
     @ManyToOne
     @JoinColumn(name="geo_leaf_id", insertable=false, updatable=false)
     private GeoTreeNode geoLeaf;
     
-    public MediaInfo(String id, BigDecimal lat, BigDecimal lon, String geoLeafId) {
+    public MediaInfo(String id, BigDecimal lat, BigDecimal lng, String geoLeafId) {
         this.id = id;
         this.lat = lat;
-        this.lon = lon;
+        this.lng = lng;
         this.geoLeafId = geoLeafId;
     }
     

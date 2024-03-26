@@ -39,10 +39,10 @@ public class GeoController {
     
     private List<List<String>> mapRectToLines(GeoTreeNode e) {
         return List.of(
-                List.of(e.getLeftTopLat().toString(), e.getLeftTopLon().toString()),
-                List.of(e.getLeftTopLat().toString(), e.getRightBotLon().toString()),
-                List.of(e.getRightBotLat().toString(), e.getRightBotLon().toString()),
-                List.of(e.getRightBotLat().toString(), e.getLeftTopLon().toString())
+                List.of(e.getLeftTopLat().toString(), e.getLeftTopLng().toString()),
+                List.of(e.getLeftTopLat().toString(), e.getRightBotLng().toString()),
+                List.of(e.getRightBotLat().toString(), e.getRightBotLng().toString()),
+                List.of(e.getRightBotLat().toString(), e.getLeftTopLng().toString())
         );
     }
     

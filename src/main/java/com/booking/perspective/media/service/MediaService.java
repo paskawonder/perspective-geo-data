@@ -6,10 +6,13 @@ import com.booking.perspective.geo.GeoUtils;
 import com.booking.perspective.geo.entity.GeoTreeNode;
 import com.booking.perspective.media.MediaInfo;
 import com.booking.perspective.media.MediaInfoRepository;
+import com.booking.perspective.media.model.MediaResponse;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,19 +39,20 @@ public class MediaService {
     @Transactional
     public void create(MediaMeta meta, String id) {
         String geoLeafId = geoService.navigateToLeaf(meta.getCoordinates()).getId();
-        MediaInfo mediaInfo = new MediaInfo(id, meta.getCoordinates().getLat(), meta.getCoordinates().getLon(), geoLeafId);
+        MediaInfo mediaInfo = new MediaInfo(id, meta.getCoordinates().getLat(), meta.getCoordinates().getLng(), geoLeafId);
         mediaInfoRepository.save(mediaInfo);
     }
     
     @Transactional
-    public List<String> get(Coordinates coordinates) {
-        GeoTreeNode leaf = geoService.navigateToLeaf(coordinates);
-        List<String> ids = expand(coordinates, leaf);
-        return fileService.get(ids);
+    public List<MediaResponse> get(Coordinates coordinates) {
+        List<MediaInfo> medias = expand(coordinates, geoService.navigateToLeaf(coordinates));
+        Map<String, Coordinates> coordinatesById = medias.stream().collect(Collectors.toMap(MediaInfo::getId, e -> new Coordinates(e.getLat(), e.getLng())));
+        Map<String, String> payloads = fileService.get(coordinatesById.keySet());
+        return payloads.entrySet().stream().map(e -> new MediaResponse(e.getValue(), coordinatesById.get(e.getKey()))).toList();
     }
     
-    private List<String> expand(Coordinates coordinates, GeoTreeNode node) {
-        BigDecimal lat = coordinates.getLat(), lng = coordinates.getLon();
+    private List<MediaInfo> expand(Coordinates coordinates, GeoTreeNode node) {
+        BigDecimal lat = coordinates.getLat(), lng = coordinates.getLng();
         List<GeoTreeNode> nodes = List.of(node);
         Set<String> visited = new HashSet<>();
         while (!nodes.isEmpty()) {
@@ -63,15 +67,15 @@ public class MediaService {
                             y = e.getRightBotLat();
                         }
                         BigDecimal x = lng;
-                        if (lng.compareTo(e.getLeftTopLon()) < 0) {
-                            x = e.getLeftTopLon();
-                        } else if (lng.compareTo(e.getRightBotLon()) > 0) {
-                            x = e.getRightBotLon();
+                        if (lng.compareTo(e.getLeftTopLng()) < 0) {
+                            x = e.getLeftTopLng();
+                        } else if (lng.compareTo(e.getRightBotLng()) > 0) {
+                            x = e.getRightBotLng();
                         }
                         return Double.compare(geoUtils.dist(lat, lng, y, x), searchRadius) < 1;
                     }).toList();
         }
-        return mediaInfoRepository.findByGeoLeafIdIn(visited).stream().filter(e -> Double.compare(geoUtils.dist(lat, lng, e.getLat(), e.getLon()), searchRadius) < 1).map(MediaInfo::getId).toList();
+        return mediaInfoRepository.findByGeoLeafIdIn(visited).stream().filter(e -> Double.compare(geoUtils.dist(lat, lng, e.getLat(), e.getLng()), searchRadius) < 1).toList();
     }
     
 }

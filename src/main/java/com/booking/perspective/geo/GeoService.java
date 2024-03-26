@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class GeoService {
     
-    private final long geoTreeRootId;
+    private final String geoTreeRootId;
     private final GeoTreeNodeRepository geoTreeNodeRepository;
     private final GeoTreeHelper geoTreeHelper;
     
     @Autowired
-    public GeoService(@Value("${geo.geo-tree.root.id}") Long geoTreeRootId, GeoTreeNodeRepository geoTreeNodeRepository, GeoTreeHelper geoTreeHelper) {
+    public GeoService(@Value("${geo.geo-tree.root.id}") String geoTreeRootId, GeoTreeNodeRepository geoTreeNodeRepository, GeoTreeHelper geoTreeHelper) {
         this.geoTreeRootId = geoTreeRootId;
         this.geoTreeNodeRepository = geoTreeNodeRepository;
         this.geoTreeHelper = geoTreeHelper;
@@ -33,7 +33,7 @@ public class GeoService {
         GeoTreeNode node = geoTreeNodeRepository.findById(geoTreeRootId).orElseThrow();
         while (!node.getChilds().isEmpty()) {
             node = node.getChilds().stream()
-                    .filter(e -> e.getLeftTopLat().compareTo(coordinates.getLat()) > -1 && e.getLeftTopLon().compareTo(coordinates.getLon()) < 1 && e.getRightBotLat().compareTo(coordinates.getLat()) < 1 && e.getRightBotLon().compareTo(coordinates.getLon()) > -1)
+                    .filter(e -> e.getLeftTopLat().compareTo(coordinates.getLat()) > -1 && e.getLeftTopLng().compareTo(coordinates.getLng()) < 1 && e.getRightBotLat().compareTo(coordinates.getLat()) < 1 && e.getRightBotLng().compareTo(coordinates.getLng()) > -1)
                     .findAny().orElseThrow();
         }
         return node;

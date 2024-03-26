@@ -31,12 +31,12 @@ public class GeoTreeNode {
     private String id;
     @Column(name = "left_top_lat")
     private BigDecimal leftTopLat;
-    @Column(name = "left_top_lon")
-    private BigDecimal leftTopLon;
+    @Column(name = "left_top_lng")
+    private BigDecimal leftTopLng;
     @Column(name = "right_bot_lat")
     private BigDecimal rightBotLat;
-    @Column(name = "right_bot_lon")
-    private BigDecimal rightBotLon;
+    @Column(name = "right_bot_lng")
+    private BigDecimal rightBotLng;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     private Set<GeoTreeNode> childs = new HashSet<>();
@@ -48,12 +48,12 @@ public class GeoTreeNode {
     )
     private Set<GeoTreeNode> adjs = new HashSet<>();
     
-    public GeoTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLon, BigDecimal rightBotLat, BigDecimal rightBotLon) {
+    public GeoTreeNode(BigDecimal leftTopLat, BigDecimal leftTopLng, BigDecimal rightBotLat, BigDecimal rightBotLng) {
         this.id = UUID.randomUUID().toString();
         this.leftTopLat = leftTopLat;
-        this.leftTopLon = leftTopLon;
+        this.leftTopLng = leftTopLng;
         this.rightBotLat = rightBotLat;
-        this.rightBotLon = rightBotLon;
+        this.rightBotLng = rightBotLng;
         this.childs = new HashSet<>();
         this.adjs = new HashSet<>();
     }
