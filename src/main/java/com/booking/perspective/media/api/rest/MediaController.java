@@ -1,9 +1,8 @@
 package com.booking.perspective.media.api.rest;
 
 import com.booking.perspective.geo.Coordinates;
-import com.booking.perspective.media.model.MediaResponse;
+import com.booking.perspective.media.MediaDTO;
 import com.booking.perspective.media.service.FileService;
-import com.booking.perspective.media.service.MediaMeta;
 import com.booking.perspective.media.service.MediaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +35,7 @@ public class MediaController {
     
     @PostMapping
     public void create(@RequestParam("meta") String metaStr, @RequestParam("file") MultipartFile file) throws IOException {
-        MediaMeta meta = objectMapper.readValue(metaStr, MediaMeta.class);
+        MediaDTO meta = objectMapper.readValue(metaStr, MediaDTO.class);
         ByteArrayOutputStream thumbnail = new ByteArrayOutputStream();
         Thumbnails.of(file.getInputStream())
                 .height(200).width(200)
@@ -47,7 +46,7 @@ public class MediaController {
     }
     
     @PostMapping("/get")
-    public List<MediaResponse> get(@RequestBody Coordinates coordinates) {
+    public List<MediaDTO> get(@RequestBody Coordinates coordinates) {
         return mediaService.get(coordinates);
     }
     

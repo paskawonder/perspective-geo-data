@@ -6,7 +6,7 @@ import com.booking.perspective.geo.GeoUtils;
 import com.booking.perspective.geo.entity.GeoTreeNode;
 import com.booking.perspective.media.MediaInfo;
 import com.booking.perspective.media.MediaInfoRepository;
-import com.booking.perspective.media.model.MediaResponse;
+import com.booking.perspective.media.MediaDTO;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
@@ -37,18 +37,18 @@ public class MediaService {
     }
 
     @Transactional
-    public void create(MediaMeta meta, String id) {
+    public void create(MediaDTO meta, String id) {
         String geoLeafId = geoService.navigateToLeaf(meta.getCoordinates()).getId();
         MediaInfo mediaInfo = new MediaInfo(id, meta.getCoordinates().getLat(), meta.getCoordinates().getLng(), geoLeafId);
         mediaInfoRepository.save(mediaInfo);
     }
     
     @Transactional
-    public List<MediaResponse> get(Coordinates coordinates) {
+    public List<MediaDTO> get(Coordinates coordinates) {
         List<MediaInfo> medias = expand(coordinates, geoService.navigateToLeaf(coordinates));
         Map<String, Coordinates> coordinatesById = medias.stream().collect(Collectors.toMap(MediaInfo::getId, e -> new Coordinates(e.getLat(), e.getLng())));
         Map<String, String> payloads = fileService.get(coordinatesById.keySet());
-        return payloads.entrySet().stream().map(e -> new MediaResponse(e.getValue(), coordinatesById.get(e.getKey()))).toList();
+        return payloads.entrySet().stream().map(e -> new MediaDTO(null, e.getValue(), coordinatesById.get(e.getKey()))).toList();
     }
     
     private List<MediaInfo> expand(Coordinates coordinates, GeoTreeNode node) {

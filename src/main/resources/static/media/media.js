@@ -14,10 +14,8 @@ function click(e) {
 
 function upload(e) {
     document.getElementById('file').addEventListener('change', function() {
-        var latlng = e.parentNode.latlng;
-        var meta = JSON.stringify({'coordinates': {'lat': latlng.lat, 'lng': latlng.lng}});
         const formData = new FormData();
-        formData.append('meta', meta);
+        formData.append('meta', JSON.stringify({'coordinates': e.parentNode.latlng}));
         formData.append('file', file.files[0]);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:8080/media', true);
@@ -32,8 +30,7 @@ function view(e) {
     xhr.overrideMimeType('application/json');
     xhr.open('POST', 'http://localhost:8080/media/get', false);
     xhr.setRequestHeader('Content-type', 'application/json');
-    var latlng = e.parentNode.latlng;
-    xhr.send(JSON.stringify({'lat': latlng.lat, 'lng': latlng.lng}));
+    xhr.send(JSON.stringify(e.parentNode.latlng));
     var imgs = JSON.parse(xhr.responseText);
     for (let i = 0; i < imgs.length; i++) {
         const img = document.createElement('img');
