@@ -22,7 +22,7 @@ function upload(e) {
         xhr.send(formData);
     });
     document.getElementById('file').click();
-    clear(e);
+    e.parentNode.style.display = 'none';
 }
 
 function view(e) {
@@ -38,15 +38,5 @@ function view(e) {
         latlng = imgs[i].coordinates;
         L.imageOverlay(img, [[latlng.lat - 1, latlng.lng - 1], [latlng.lat + 1, latlng.lng + 1]]).addTo(map);
     }
-    clear(e);
-}
-
-function clear(e) {
     e.parentNode.style.display = 'none';
-}
-
-function removeAllChildNodes(parent) {
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
 }
