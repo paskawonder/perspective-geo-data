@@ -5,7 +5,7 @@ secrets:
 
 media:
   storage:
-    path: '/Users/ppolubentcev/Projects/media'
+    s3-bucket: perspective-media-thumbnail
   search:
     radius: 5000
 

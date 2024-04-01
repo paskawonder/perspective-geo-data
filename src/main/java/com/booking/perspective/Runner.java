@@ -13,6 +13,7 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.profiles.ProfileFile;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @SpringBootApplication
 @Configuration
@@ -40,6 +41,14 @@ public class Runner {
                     .profileFile(ProfileFile.builder().content(Path.of(path)).type(ProfileFile.Type.CREDENTIALS).build()).build()
                 ).region(Region.EU_WEST_2).build()
             ).build();
+    }
+    
+    @Bean
+    public S3Client s3Client(@Value("${secrets.aws.credentials.file-path}") String path) {
+        return S3Client.builder()
+                .credentialsProvider(DefaultCredentialsProvider.builder()
+                        .profileFile(ProfileFile.builder().content(Path.of(path)).type(ProfileFile.Type.CREDENTIALS).build()).build()
+                ).region(Region.EU_WEST_2).build();
     }
 
 }

@@ -1,47 +1,25 @@
 package com.booking.perspective.media.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.booking.perspective.media.FileRepository;
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FileService {
     
-    private final String mediaStoragePath;
+    private final FileRepository fileRepository;
     
-    @Autowired
-    public FileService(@Value("${media.storage.path}") String mediaStoragePath) {
-        this.mediaStoragePath = mediaStoragePath;
+    public FileService(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
     }
     
-    public void save(ByteArrayOutputStream outputStream, String id) {
-        Path path = Path.of(mediaStoragePath, id);
-        try {
-            byte[] base64 = Base64.encodeBase64(outputStream.toByteArray());
-            Files.copy(new ByteArrayInputStream(base64), path);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public void save(String id, byte[] bytes) {
+        fileRepository.save(id, bytes);
     }
     
-    public Map<String, String> get(Collection<String> ids) {
-        return ids.stream().collect(Collectors.toMap(id -> id, id -> {
-            try {
-                return Files.readString(Path.of(mediaStoragePath, id));
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-            }
-        }));
+    public Map<String, String> getUrls(Collection<String> ids) {
+        return fileRepository.getUrls(ids);
     }
     
 }

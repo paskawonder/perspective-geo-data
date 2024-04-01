@@ -34,7 +34,7 @@ function view(e) {
     var imgs = JSON.parse(xhr.responseText);
     for (let i = 0; i < imgs.length; i++) {
         const img = document.createElement('img');
-        img.src = 'data:image/jpeg;base64,' + imgs[i].payload;
+        img.src = imgs[i].url;
         latlng = imgs[i].coordinates;
         L.imageOverlay(img, [[latlng.lat - 1, latlng.lng - 1], [latlng.lat + 1, latlng.lng + 1]]).addTo(map);
     }

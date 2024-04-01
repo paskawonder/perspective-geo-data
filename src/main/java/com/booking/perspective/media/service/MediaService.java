@@ -48,7 +48,7 @@ public class MediaService {
     public List<MediaDTO> get(Coordinates coordinates) {
         List<MediaInfo> medias = expand(coordinates, geoService.navigateToLeaf(coordinates));
         Map<String, Coordinates> coordinatesById = medias.stream().collect(Collectors.toMap(MediaInfo::getId, e -> new Coordinates(e.getLat(), e.getLng())));
-        Map<String, String> payloads = fileService.get(coordinatesById.keySet());
+        Map<String, String> payloads = fileService.getUrls(coordinatesById.keySet());
         return payloads.entrySet().stream().map(e -> new MediaDTO(null, e.getValue(), coordinatesById.get(e.getKey()))).toList();
     }
     

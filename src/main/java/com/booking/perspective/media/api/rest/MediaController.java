@@ -41,7 +41,7 @@ public class MediaController {
                 .height(200).width(200)
                 .outputQuality(0.5).toOutputStream(thumbnail);
         String id = UUID.randomUUID().toString();
-        fileService.save(thumbnail, id);
+        fileService.save(id, thumbnail.toByteArray());
         mediaService.create(meta, id);
     }
     

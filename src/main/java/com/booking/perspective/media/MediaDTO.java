@@ -12,7 +12,7 @@ public final class MediaDTO {
     
     private String userId;
     
-    private String payload;
+    private String url;
     
     private Coordinates coordinates;
     
