@@ -1,38 +1,48 @@
 package com.booking.perspective.media;
 
-import com.booking.perspective.geo.entity.GeoTreeNode;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.math.BigDecimal;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 @NoArgsConstructor
-@Getter
-@Entity
+@Setter
+@DynamoDbBean
 public class MediaInfo {
     
-    @Id
-    @Column(name = "id", columnDefinition="CHAR(36)")
     private String id;
-    @Column(name = "lat")
     private BigDecimal lat;
-    @Column(name = "lng")
     private BigDecimal lng;
-    @Column(name = "geo_leaf_id", columnDefinition="CHAR(36)")
     private String geoLeafId;
-    @ManyToOne
-    @JoinColumn(name="geo_leaf_id", insertable=false, updatable=false)
-    private GeoTreeNode geoLeaf;
     
     public MediaInfo(String id, BigDecimal lat, BigDecimal lng, String geoLeafId) {
         this.id = id;
         this.lat = lat;
         this.lng = lng;
         this.geoLeafId = geoLeafId;
+    }
+    
+    @DynamoDbSortKey
+    public String getId() {
+        return id;
+    }
+    
+    @DynamoDbAttribute(value = "lat")
+    public BigDecimal getLat() {
+        return lat;
+    }
+    
+    @DynamoDbAttribute(value = "lnd")
+    public BigDecimal getLng() {
+        return lng;
+    }
+    
+    @DynamoDbPartitionKey
+    public String getGeoLeafId() {
+        return geoLeafId;
     }
     
 }

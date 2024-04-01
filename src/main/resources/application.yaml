@@ -1,3 +1,8 @@
+secrets:
+  aws:
+    credentials:
+      file-path: /Users/ppolubentcev/Downloads/cred.config
+
 media:
   storage:
     path: '/Users/ppolubentcev/Projects/media'
@@ -17,12 +22,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
-  sql:
-    init:
-      mode: always
-  h2:
-    console:
-      enabled: true
   datasource:
-    username: sa
-    driverClassName: org.h2.Driver
+    url:
+    username:
+    password:

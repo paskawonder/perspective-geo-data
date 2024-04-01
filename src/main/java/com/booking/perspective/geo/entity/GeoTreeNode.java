@@ -16,18 +16,16 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
 @EqualsAndHashCode(exclude = {"id", "childs", "adjs"})
 @Entity
 public class GeoTreeNode {
     
     @Id
-    @Column(name = "id", columnDefinition="CHAR(36)")
+    @Column(name = "id", columnDefinition="VARCHAR(36)")
     private String id;
     @Column(name = "left_top_lat")
     private BigDecimal leftTopLat;

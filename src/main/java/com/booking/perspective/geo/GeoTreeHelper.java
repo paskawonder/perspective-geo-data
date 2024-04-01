@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ public class GeoTreeHelper {
                 new GeoTreeNode(mid[0], leaf.getLeftTopLng(), leaf.getRightBotLat(), mid[1]),
                 new GeoTreeNode(mid[0], mid[1], leaf.getRightBotLat(), leaf.getRightBotLng())
         );
-        leaf.setChilds(new HashSet<>(childs));
+        leaf.getChilds().addAll(childs);
         for (GeoTreeNode adj: leaf.getAdjs()) {
             adj.getAdjs().remove(leaf);
         }

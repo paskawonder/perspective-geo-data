@@ -8,6 +8,7 @@ import com.booking.perspective.media.MediaInfo;
 import com.booking.perspective.media.MediaInfoRepository;
 import com.booking.perspective.media.MediaDTO;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,11 @@ public class MediaService {
                         return Double.compare(geoUtils.dist(lat, lng, y, x), searchRadius) < 1;
                     }).toList();
         }
-        return mediaInfoRepository.findByGeoLeafIdIn(visited).stream().filter(e -> Double.compare(geoUtils.dist(lat, lng, e.getLat(), e.getLng()), searchRadius) < 1).toList();
+        List<MediaInfo> media = new ArrayList<>();
+        for (String leafId: visited) {
+            media.addAll(mediaInfoRepository.findByGeoLeafIdIn(leafId));
+        }
+        return media;
     }
     
 }
